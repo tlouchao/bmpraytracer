@@ -20,7 +20,7 @@ void writeToBmpFile(){
         unsigned int infoHeaderSize = 40;
         unsigned int biWidth = 600;
         unsigned int biHeight = 400;
-        unsigned int depth = 3;
+        unsigned int depth = 3; // 24bits divided by 8bits
         unsigned int biBitCount = 24;
         unsigned int rowSize = (depth * biWidth) + ((depth * biWidth) % 4);
         unsigned int fileSize = (rowSize * biHeight) + headerSize;
