@@ -4,10 +4,9 @@
 #include <cmath>
 #include <cstdint>
 #include <fstream>
-#include <iosfwd>
 #include <iomanip>
 #include <stdexcept>
-#include "color.h"
+#include "vec.h"
 
 using std::ofstream; 
 using std::ios; 
@@ -40,9 +39,9 @@ class BMP {
         BMP(unsigned int w, unsigned int h, unsigned short bpp = 24u);
         ~BMP();
         void writeImg(const char* imgArr_in, const size_t n);
-        void writeImg(const Color* cArr_in, const size_t n);
-        void setColor(const Color& c, const size_t b_idx);
-        void fillColor(const Color& c);
+        void writeImg(const Vec3f* imgArr_in, const size_t n);
+        void setColor(const Vec3f& v, const size_t bptr);
+        void fillColor(const Vec3f& v);
         friend ofstream& operator<< (ofstream& outf, BMP& bmp);
 };
 
