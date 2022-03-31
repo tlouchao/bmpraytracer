@@ -1,11 +1,11 @@
 #ifndef BMP_H
 #define BMP_H
 
+#include <cassert>
 #include <cmath>
 #include <cstdint>
 #include <fstream>
 #include <iomanip>
-#include <stdexcept>
 #include "vec.h"
 
 using std::ofstream; 
@@ -14,7 +14,6 @@ using std::hex;
 using std::setw; 
 using std::setfill; 
 using std::left;
-using std::length_error;
 
 class BMP {
     public:

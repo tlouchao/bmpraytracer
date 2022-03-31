@@ -1,13 +1,10 @@
 #include "bmp.h"
 
 BMP::BMP(unsigned int w, unsigned int h, unsigned short bpp) : width{w}, height{h}, bitspp{bpp} {
-    if (bpp == 24u || bpp == 32u){
-        rowSize = 4u * ceil((bitspp * width) / 32u);
-        fileSize = headerSize + (rowSize * height);
-        imgArr = new char[rowSize * height];
-    } else {
-        throw length_error("length must be equal to unsigned int 24u or 32u");
-    }
+    assert(bpp == 24u || bpp == 32u);
+    rowSize = 4u * ceil((bitspp * width) / 32u);
+    fileSize = headerSize + (rowSize * height);
+    imgArr = new char[rowSize * height];
 }
 
 BMP::~BMP() noexcept {
@@ -38,22 +35,25 @@ ofstream& operator<< (ofstream& outf, BMP& bmp){
         outf << setw(sizeof(uint32_t)) << (char*) &bmp.nimpcolors;
 
         // write pixel array
-        unsigned int blue{0xFF0000}, green{0x00FF00}, red{0x0000FF};
-        unsigned int bgr;
+        Vec3u magenta = Vec3u(255u, 0u, 255u); 
+        Vec3u yellow = Vec3u(255u, 255u, 0u); 
+        Vec3u cyan = Vec3u(0u, 255u, 255u);
+        Vec3u buf;
 
         outf << setw(sizeof(char));
+        #
         for(int i{}; i < bmp.height; ++i){
             for(int j{}; j < bmp.width; ++j){
                 if (j < (bmp.width / 3)){
-                    bgr = red;
+                    buf = magenta;
                 } else if (j < ((bmp.width / 3) * 2)){
-                    bgr = green;
+                    buf = yellow;
                 } else if (j < bmp.width) {
-                    bgr = blue;
+                    buf = cyan;
                 }
-                outf << (char) (bgr >> 16 & 0xFF);
-                outf << (char) (bgr >> 8 & 0xFF); 
-                outf << (char) (bgr & 0xFF);
+                outf << (char) (buf[2]);
+                outf << (char) (buf[1]);
+                outf << (char) (buf[0]);
             }
             int rowRem = (((int) outf.tellp()) - bmp.headerSize) % 4;
             if (rowRem != 0){
