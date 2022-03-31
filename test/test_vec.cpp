@@ -2,7 +2,7 @@
 #include "../src/vec.h"
 
 TEST(RGBTest, GetSet){
-    Vec3u c(0xFFu, 0x80u, 0x00u);
+    color c(0xFFu, 0x80u, 0x00u);
 
     // getters
     EXPECT_TRUE(255u == c[0]);
@@ -44,7 +44,6 @@ TEST(Vec3Test, Magnitude){
     EXPECT_FLOAT_EQ(5.0f, v3.magnitude());
 
     Vec3f vnorm = v3.normalize();
-    std::cout << vnorm << '\n';
     EXPECT_FLOAT_EQ(0.6f, vnorm[0]);
     EXPECT_FLOAT_EQ(0.8f, vnorm[1]);
 }

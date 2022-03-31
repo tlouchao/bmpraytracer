@@ -12,3 +12,9 @@ cd build
 cmake ..
 make
 ```
+
+In VS Code, add the following value to `.vscode -> c_cpp_properties.json -> configurations -> includePath`,
+in order for VS Code to recognize `gtest/gtest.h` as a header file (if tests are enabled):
+```
+ "${workspaceFolder}/build/_deps/googletest-src/googletest/include"
+```

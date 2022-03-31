@@ -1,6 +1,7 @@
 #ifndef BMP_H
 #define BMP_H
 
+#include <array>
 #include <cassert>
 #include <cmath>
 #include <cstdint>
@@ -16,7 +17,7 @@ using std::setfill;
 using std::left;
 
 class BMP {
-    public:
+    private:
         char magic[2]{'B', 'M'};
         unsigned int headerSize{ 54 };
         unsigned int infoHeaderSize{ 40 };
@@ -33,14 +34,22 @@ class BMP {
         unsigned int nimpcolors{ 0 }; // important colors
         unsigned int rowSize;
         unsigned int fileSize;
-        char* imgArr;
+        
+        color* imgArr;
+
     public:
+        // construct & destruct
         BMP(unsigned int w, unsigned int h, unsigned short bpp = 24u);
         ~BMP();
-        void writeImg(const char* imgArr_in, const size_t n);
-        void writeImg(const Vec3f* imgArr_in, const size_t n);
-        void setColor(const Vec3f& v, const size_t bptr);
-        void fillColor(const Vec3f& v);
+
+        // methods
+        color& getColor(const size_t h, const size_t w);
+        color& getColor(const size_t idx);
+        void setColor(const color& c, const size_t h, const size_t w);
+        void setColor(const color& c, const size_t idx);
+        void fillColor(const color& c);
+
+        // overload
         friend ofstream& operator<< (ofstream& outf, BMP& bmp);
 };
 

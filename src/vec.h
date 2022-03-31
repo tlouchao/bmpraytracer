@@ -15,9 +15,9 @@ class vec {
         const T& operator[](const size_t i) const { assert(i < DIM); return _data[i]; }
 };
 
+typedef vec<3, unsigned int> color;
 typedef vec<2, float> Vec2f;
 typedef vec<3, float> Vec3f;
-typedef vec<3, unsigned int  > Vec3u;
 typedef vec<4, float> Vec4f;
 
 template <typename T> 
@@ -88,7 +88,7 @@ T operator*(const vec<DIM, T>& q, const vec<DIM, T>& r){
 
 // Add two vectors element-wise, return a new vector
 template<size_t DIM, typename T> 
-vec<DIM, T> operator+ (const vec<DIM, T>& q, const vec<DIM, T>& r){
+vec<DIM, T> operator+(const vec<DIM, T>& q, const vec<DIM, T>& r){
     vec<DIM, T> res;
     for (size_t i{}; i < DIM; ++i) { res[i] = q[i] + r[i]; }
     return res;
@@ -116,6 +116,18 @@ vec<DIM,T> operator-(const vec<DIM, T>& q){
     vec<DIM, T> res = q * T(-1);
     return res;
 }
+
+// Equals operator
+template<size_t DIM,typename T> 
+bool operator==(const vec<DIM, T>& l, const vec<DIM, T>& r){
+    bool isEqual {true};
+    for(size_t i{}; i < DIM; ++i){ if (l[i] != r[i]) { isEqual = false; break; }}
+    return isEqual;
+}
+
+// Not equals operator
+template<size_t DIM,typename T> 
+bool operator!=(const vec<DIM, T>& l, const vec<DIM, T>& r){ return !(l == r); }
 
 // Print contents
 template<size_t DIM,typename T>

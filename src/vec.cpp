@@ -1,8 +1,8 @@
 #include "vec.h"
 
+template class vec<3, unsigned int>;
 template class vec<2, float>;
 template class vec<3, float>;
-template class vec<3, unsigned int>;
 template class vec<4, float>;
 
 // ----- DIM 2 -----

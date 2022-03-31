@@ -1,21 +1,51 @@
 #include "bmp.h"
+#include <iostream>
 
 BMP::BMP(unsigned int w, unsigned int h, unsigned short bpp) : width{w}, height{h}, bitspp{bpp} {
     assert(bpp == 24u || bpp == 32u);
     rowSize = 4u * ceil((bitspp * width) / 32u);
     fileSize = headerSize + (rowSize * height);
-    imgArr = new char[rowSize * height];
+    imgArr = new color[width * height];
+    fillColor(color(0u, 0u, 0u));
 }
 
 BMP::~BMP() noexcept {
     delete[] imgArr;
 }
 
+color& BMP::getColor(const size_t h, const size_t w){
+    assert (w < width && h < height);
+    return imgArr[(h * width) + w]; 
+}
+
+color& BMP::getColor(const size_t idx){
+    assert (idx < width * height);
+    return imgArr[idx]; 
+}
+
+void BMP::setColor(const color& c, const size_t h, const size_t w){ 
+    assert (w < width && h < height);
+    imgArr[(h * width) + w] = c; 
+}
+
+void BMP::setColor(const color& c, const size_t idx){ 
+    assert (idx < width * height);
+    imgArr[idx] = c; 
+}
+
+void BMP::fillColor(const color& c){ 
+    for (size_t i{}; i < height; ++i){
+        for (size_t j{}; j < width; ++j){
+            imgArr[(i * width) + j] = c;
+        }
+    }
+}
+
 ofstream& operator<< (ofstream& outf, BMP& bmp){
     if (outf.is_open()){
         outf << hex << left << setfill('\0');
 
-        // write bitmap file header; left align with padding (little-endian)
+        // bitmap file header; left align with padding (little-endian)
         outf << setw(sizeof(char)) << bmp.magic[0] << bmp.magic[1];
         outf << setw(sizeof(uint32_t)) << (char*) &bmp.fileSize;
         outf << setw(sizeof(uint32_t)) << (char*) &bmp.reserved;
@@ -34,29 +64,16 @@ ofstream& operator<< (ofstream& outf, BMP& bmp){
         outf << setw(sizeof(uint32_t)) << (char*) &bmp.ncolors;
         outf << setw(sizeof(uint32_t)) << (char*) &bmp.nimpcolors;
 
-        // write pixel array
-        Vec3u magenta = Vec3u(255u, 0u, 255u); 
-        Vec3u yellow = Vec3u(255u, 255u, 0u); 
-        Vec3u cyan = Vec3u(0u, 255u, 255u);
-        Vec3u buf;
-
+        // pixel array
         outf << setw(sizeof(char));
-        #
         for(int i{}; i < bmp.height; ++i){
             for(int j{}; j < bmp.width; ++j){
-                if (j < (bmp.width / 3)){
-                    buf = magenta;
-                } else if (j < ((bmp.width / 3) * 2)){
-                    buf = yellow;
-                } else if (j < bmp.width) {
-                    buf = cyan;
+                for (int k{2}; k >= 0; --k){ // backwards ordering (BGR)
+                    outf << (char) bmp.getColor(i, j)[k];
                 }
-                outf << (char) (buf[2]);
-                outf << (char) (buf[1]);
-                outf << (char) (buf[0]);
             }
             int rowRem = (((int) outf.tellp()) - bmp.headerSize) % 4;
-            if (rowRem != 0){
+            if (rowRem != 0){ // include padding per row
                 outf << setw(4 - rowRem) << (char) 0;
                 outf << setw(sizeof(char));
             }
