@@ -7,7 +7,8 @@
 #include <cstdint>
 #include <fstream>
 #include <iomanip>
-#include "vec.h"
+#include <memory>
+#include "colors.h"
 
 using std::ofstream; 
 using std::ios; 
@@ -34,22 +35,10 @@ class BMP {
         unsigned int nimpcolors{ 0 }; // important colors
         unsigned int rowSize;
         unsigned int fileSize;
-        
-        color* imgArr;
+        std::shared_ptr<Colors> colors; // container for pixel array
 
     public:
-        // construct & destruct
-        BMP(unsigned int w, unsigned int h, unsigned short bpp = 24u);
-        ~BMP();
-
-        // methods
-        color& getColor(const size_t h, const size_t w);
-        color& getColor(const size_t idx);
-        void setColor(const color& c, const size_t h, const size_t w);
-        void setColor(const color& c, const size_t idx);
-        void fillColor(const color& c);
-
-        // overload
+        BMP(std::shared_ptr<Colors>& c);
         friend ofstream& operator<< (ofstream& outf, BMP& bmp);
 };
 

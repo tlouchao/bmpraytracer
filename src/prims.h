@@ -1,5 +1,5 @@
-#ifndef SPHERE_H
-#define SPHERE_H
+#ifndef PRIMS_H
+#define PRIMS_H
 
 #include "vec.h"
 
@@ -9,7 +9,8 @@ class Sphere {
         float radius;
     public:
         Sphere(Vec3f center, float radius);
-        bool ray_intersect(const Vec3f& origin, const Vec3f& dir) const;
+        Vec3f getCenter() const;
+        float getRadius() const;
 };
 
 #endif

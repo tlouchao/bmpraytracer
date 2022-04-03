@@ -1,18 +1,24 @@
 #ifndef CASTER_H
 #define CASTER_H
 
-#include "vec.h"
+#include <memory>
+#include <math.h>
+#include "colors.h"
+#include "prims.h"
 
-Vec3f* generate_rays(size_t width, size_t height, float fov){
-    Vec3f* rays = new Vec3f[width * height];
-    for (size_t i{}; i < height; ++i){
-        for (size_t j{}; j < width; j++){
-            float x =  (2*(j + 0.5)/(float)width  - 1)*tan(fov/2.)*width/(float)height;
-            float y = (2*(i + 0.5)/(float)height - 1)*tan(fov/2.);
-            rays[i * width + j] = Vec3f(x, y, -1).normalize();
-        }
-    }
-    return rays; 
-}
+class Caster {
+    private:
+        float fov;
+        Vec3f* rayArr;
+        size_t width;
+        size_t height;
+        std::shared_ptr<Colors> colors;
+    public:
+        Caster(std::shared_ptr<Colors>& colors_in, float fov_in = M_PI / 3); // 60 deg
+        ~Caster() noexcept;
+    private:
+        void generateRays();
+        bool isSphereRayIntersect(const Sphere&, const Vec3f& origin, const Vec3f& dir) const;
+};
 
 #endif

@@ -19,7 +19,7 @@ file(GLOB SOURCES "src/*.h" "src/*.cpp")
 file(GLOB TESTS "test/*.cpp")
 add_executable(${PROJECT_NAME} ${SOURCES} main.cpp )
 add_executable(test_${PROJECT_NAME} ${SOURCES} ${TESTS} )
-target_link_libraries(test_${PROJECT_NAME} gtest_main)
+target_link_libraries(test_${PROJECT_NAME} gtest gtest_main)
 
 include(GoogleTest)
 gtest_discover_tests(test_${PROJECT_NAME})

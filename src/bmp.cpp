@@ -1,44 +1,15 @@
 #include "bmp.h"
-#include <iostream>
 
-BMP::BMP(unsigned int w, unsigned int h, unsigned short bpp) : width{w}, height{h}, bitspp{bpp} {
-    assert(bpp == 24u || bpp == 32u);
+BMP::BMP(std::shared_ptr<Colors>& c){
+    colors = std::shared_ptr<Colors>(c);
+    unsigned int tmpbpp = colors.get()->getBpp();
+    assert(tmpbpp == 24u || tmpbpp == 32u); bitspp = tmpbpp;
+
+    // TODO: check here during cast, to prevent overflow
+    width = (unsigned int) colors.get()->getWidth(); 
+    height = (unsigned int) colors.get()->getHeight();
     rowSize = 4u * ceil((bitspp * width) / 32u);
     fileSize = headerSize + (rowSize * height);
-    imgArr = new color[width * height];
-    fillColor(color(0u, 0u, 0u));
-}
-
-BMP::~BMP() noexcept {
-    delete[] imgArr;
-}
-
-color& BMP::getColor(const size_t h, const size_t w){
-    assert (w < width && h < height);
-    return imgArr[(h * width) + w]; 
-}
-
-color& BMP::getColor(const size_t idx){
-    assert (idx < width * height);
-    return imgArr[idx]; 
-}
-
-void BMP::setColor(const color& c, const size_t h, const size_t w){ 
-    assert (w < width && h < height);
-    imgArr[(h * width) + w] = c; 
-}
-
-void BMP::setColor(const color& c, const size_t idx){ 
-    assert (idx < width * height);
-    imgArr[idx] = c; 
-}
-
-void BMP::fillColor(const color& c){ 
-    for (size_t i{}; i < height; ++i){
-        for (size_t j{}; j < width; ++j){
-            imgArr[(i * width) + j] = c;
-        }
-    }
 }
 
 ofstream& operator<< (ofstream& outf, BMP& bmp){
@@ -69,7 +40,7 @@ ofstream& operator<< (ofstream& outf, BMP& bmp){
         for(int i{}; i < bmp.height; ++i){
             for(int j{}; j < bmp.width; ++j){
                 for (int k{2}; k >= 0; --k){ // backwards ordering (BGR)
-                    outf << (char) bmp.getColor(i, j)[k];
+                    outf << (char) bmp.colors.get()->getColor(i, j)[k];
                 }
             }
             int rowRem = (((int) outf.tellp()) - bmp.headerSize) % 4;
