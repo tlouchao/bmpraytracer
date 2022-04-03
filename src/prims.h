@@ -3,6 +3,7 @@
 
 #include "vec.h"
 
+// Primitives in 3D modeling software such as cubes, spheres, lights
 class Sphere {
     private:
         Vec3f center;

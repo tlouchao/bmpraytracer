@@ -3,7 +3,7 @@
 Colors::Colors(size_t w, size_t h, unsigned int bpp) : width{w}, height{h} {
     assert(bpp == 24u || bpp == 32u); bitspp = bpp; 
     imgArr = new color[width * height];
-    fillColor(color(0u, 0u, 0u));
+    fillColor();
 }
 
 Colors::~Colors() noexcept { delete[] imgArr; }
@@ -43,6 +43,7 @@ void Colors::fillColor(const color& c){
 void Colors::fillColor(){
     fillColor(color(0u, 0u, 0u));
 }
+
 unsigned int Colors::getBpp(){ return bitspp; }
 
 color* Colors::getArr() { 

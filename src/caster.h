@@ -9,16 +9,21 @@
 class Caster {
     private:
         float fov;
-        Vec3f* rayArr;
         size_t width;
         size_t height;
+        Vec3f* rayArr;
         std::shared_ptr<Colors> colors;
     public:
         Caster(std::shared_ptr<Colors>& colors_in, float fov_in = M_PI / 3); // 60 deg
         ~Caster() noexcept;
+        float getFov() const;
+        void setFov(float fov_in);
+        void cast(const Sphere& sphere, const color& color, 
+            const Vec3f& origin = Vec3f(0., 0., 0.)) const;
+        bool isSphereRayIntersect(const Sphere&, const Vec3f& dir, 
+            const Vec3f& origin = Vec3f(0., 0., 0.)) const;
     private:
         void generateRays();
-        bool isSphereRayIntersect(const Sphere&, const Vec3f& origin, const Vec3f& dir) const;
 };
 
 #endif

@@ -8,18 +8,21 @@ Caster::Caster(std::shared_ptr<Colors>& colors_in, float fov_in) : fov{fov_in} {
 
 Caster::~Caster() noexcept { delete[] rayArr; }
 
-void Caster::generateRays() {
-    rayArr = new Vec3f[width * height];
+float Caster::getFov() const { return fov; }
+
+void Caster::setFov(float fov_in){ fov = fov_in; }
+
+void Caster::cast(const Sphere& sphere, const color& color, const Vec3f& origin) const {
     for (size_t i{}; i < height; ++i){
         for (size_t j{}; j < width; j++){
-            float x =  (2*(j + 0.5)/(float)width  - 1)*tan(fov/2.)*width/(float)height;
-            float y = (2*(i + 0.5)/(float)height - 1)*tan(fov/2.);
-            rayArr[i * width + j] = Vec3f(x, y, -1).normalize();
+            if (isSphereRayIntersect(sphere, rayArr[i * width + j], origin)) {
+                colors.get()->setColor(color, i, j);
+            }
         }
     }
 }
 
-bool Caster::isSphereRayIntersect(const Sphere& sphere, const Vec3f& origin, const Vec3f& dir) const {
+bool Caster::isSphereRayIntersect(const Sphere& sphere, const Vec3f& dir, const Vec3f& origin) const {
     bool res = false;
     Vec3f L = sphere.getCenter() - origin; // vector from origin to center
     float tca = L * dir; // dot product; projection onto ray; adjacent vector of right tri
@@ -32,4 +35,15 @@ bool Caster::isSphereRayIntersect(const Sphere& sphere, const Vec3f& origin, con
         }
     }
     return res;
+}
+
+void Caster::generateRays() {
+    rayArr = new Vec3f[width * height];
+    for (size_t i{}; i < height; ++i){
+        for (size_t j{}; j < width; j++){
+            float x =  (2*(j + 0.5)/(float)width  - 1)*tan(fov/2.)*width/(float)height;
+            float y = (2*(i + 0.5)/(float)height - 1)*tan(fov/2.);
+            rayArr[i * width + j] = Vec3f(x, y, -1).normalize();
+        }
+    }
 }
