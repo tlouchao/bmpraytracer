@@ -1,8 +1,10 @@
 #ifndef CASTER_H
 #define CASTER_H
 
+#include <cmath>
+#include <limits>
 #include <memory>
-#include <math.h>
+#include <vector>
 #include "colors.h"
 #include "prims.h"
 
@@ -18,9 +20,9 @@ class Caster {
         ~Caster() noexcept;
         float getFov() const;
         void setFov(float fov_in);
-        void cast(const Sphere& sphere, const color& color, 
+        void cast(const std::vector<Sphere>& spheres, const std::vector<Light>& lights, 
             const Vec3f& origin = Vec3f(0., 0., 0.)) const;
-        bool isSphereRayIntersect(const Sphere&, const Vec3f& dir, 
+        bool isSphereRayIntersect(float& mnDistOut, const Sphere& sphere, const Vec3f& dir,
             const Vec3f& origin = Vec3f(0., 0., 0.)) const;
     private:
         void generateRays();
