@@ -23,7 +23,7 @@ class Caster {
         void cast(const std::vector<Sphere>& spheres, const std::vector<Light>& lights, 
             const Vec3f& origin = Vec3f(0., 0., 0.)) const;
         Vec3f reflect(Vec3f& dir, Vec3f& N) const;
-        bool isSphereRayIntersect(float& mnDistOut, const Sphere& sphere, const Vec3f& dir,
+        bool isSphereRayIntersect(float& mnDistOut, Vec3f& hitOut, const Sphere& sphere, const Vec3f& dir,
             const Vec3f& origin = Vec3f(0., 0., 0.)) const;
     private:
         void generateRays();
