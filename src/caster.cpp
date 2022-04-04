@@ -19,28 +19,36 @@ void Caster::cast(const std::vector<Sphere>& spheres, const std::vector<Light>& 
             // TODO: place hitpoint color calculation into separate function
             float mnDistSpheres = std::numeric_limits<float>::max(); // min dist combined spheres
             float mnDistOut; 
-            Vec3f hitPoint;
-            Vec3f surfaceNormal;
-            color diffuseColor;
+            Vec3f hit, N; // collision point, surface normal
+            Material material;
             for(size_t sp_k{}; sp_k < spheres.size(); ++sp_k){
                 if (isSphereRayIntersect(mnDistOut, spheres[sp_k], rayArr[i * width + j], origin) &&
                     mnDistOut < mnDistSpheres) {
                     mnDistSpheres = mnDistOut;
-                    hitPoint = origin + rayArr[i * width + j] * mnDistOut;
-                    surfaceNormal = (hitPoint - spheres[sp_k].getCenter()).normalize();
-                    diffuseColor = spheres[sp_k].getDiffuseColor();
-                    float diffuseIntensity{};
+                    hit = origin + rayArr[i * width + j] * mnDistOut;
+                    N = (hit - spheres[sp_k].getCenter()).normalize();
+                    material = spheres[sp_k].getMaterial();
+                    float diffuseIntensity{}, specularIntensity{};
                     for(size_t lt_l{}; lt_l < lights.size(); ++lt_l){
-                        Vec3f lightDir = (lights[lt_l].getCenter() - hitPoint).normalize();
-                        diffuseIntensity += lights[lt_l].getIntensity() * std::max(0.f, lightDir * surfaceNormal);
+                        Vec3f lightDir = (lights[lt_l].getCenter() - hit).normalize();
+                        diffuseIntensity += lights[lt_l].getIntensity() * std::max(0.f, lightDir * N);
+                        specularIntensity += powf(std::max(0.f, reflect(lightDir, N)*rayArr[i * width + j]), 
+                            material.getSpecExponent())*lights[lt_l].getIntensity();
                     }
-                    diffuseIntensity = std::min(1.f, diffuseIntensity);
-                    color resultColor = diffuseColor * diffuseIntensity;
+                    color resultColor = (material.getDiffuseColor() * diffuseIntensity * material.getAlbedo()[0]) + 
+                        (color(255u, 255u, 255u) * specularIntensity * material.getAlbedo()[1]);
+                    resultColor[0] = std::min(255u, resultColor[0]); 
+                    resultColor[1] = std::min(255u, resultColor[1]);
+                    resultColor[2] = std::min(255u, resultColor[2]);
                     colors.get()->setColor(resultColor, i, j);
                 }
             }
         }
     }
+}
+
+Vec3f Caster::reflect(Vec3f& dir, Vec3f& N) const {
+    return dir - (N * 2) * (N * dir);
 }
 
 bool Caster::isSphereRayIntersect(float& mnDistOut, const Sphere& sphere, const Vec3f& dir, const Vec3f& origin) const {

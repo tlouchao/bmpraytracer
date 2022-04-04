@@ -12,13 +12,9 @@ class vec {
     public:
         // constructors
         vec() { for(size_t i{}; i < DIM; ++i){ _data[i] = T(); }}
-        vec(const vec& copy) { for(size_t i{}; i < DIM; ++i){ _data[i] = copy._data[i]; }}
         // access data
         T& operator[](const size_t i){ assert(i < DIM); return _data[i]; }
         const T& operator[](const size_t i) const { assert(i < DIM); return _data[i]; }
-        vec& operator= (const vec& copy) {
-            for(size_t i{}; i < DIM; ++i){ _data[i] = copy._data[i]; } return *this;
-        }
 };
 
 typedef vec<3, unsigned int> color;
@@ -34,12 +30,10 @@ class vec<2,T> {
         // constructors
         vec();
         vec(T x_in, T y_in);
-        vec(const vec<2,T>& copy);
         
         // access data
         T& operator[](const size_t i);
         const T& operator[](const size_t i) const;
-        vec<2,T>& operator= (const vec<2,T>& copy);
 };
 
 template <typename T> 
@@ -50,12 +44,10 @@ class vec<3,T> {
         // constructors
         vec();
         vec(T x_in, T y_in, T z_in);
-        vec(const vec<3,T>& copy);
 
         // access data
         T& operator[](const size_t i);
         const T& operator[](const size_t i) const;
-        vec<3,T>& operator= (const vec<3,T>& copy);
 
         // get magnitude of vector
         float magnitude();
@@ -72,12 +64,10 @@ class vec<4,T> {
         // constructors
         vec();
         vec(T x_in, T y_in, T z_in, T w_in);
-        vec(const vec<4,T>& copy);
 
         // access data
         T& operator[](const size_t i);
         const T& operator[](const size_t i) const;
-        vec<4,T>& operator= (const vec<4,T>& copy);
 };
 
 // ----- Overloaded Operators -----

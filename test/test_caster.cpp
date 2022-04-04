@@ -9,7 +9,7 @@ class CasterFixture : public ::testing::Test {
         float mnDistOut = std::numeric_limits<float>::max();
 
         // sphere to the right of y-axis, with radius 1
-        Material m = Material(color(255u, 0u, 0u));
+        Material m = Material();
         Sphere sp = Sphere(m, Vec3f(1.f, 0.f, -1.f), 1.f);
 };
 
@@ -19,6 +19,13 @@ TEST_F(CasterFixture, GetSetFov){
     float fovTwo = M_PI_2;
     caster.setFov(fovTwo);
     EXPECT_FLOAT_EQ(caster.getFov(), M_PI / 2);
+}
+
+TEST_F(CasterFixture, ReflectX){
+    Vec3f dir = Vec3f(1, -1, 0);
+    Vec3f N = Vec3f(-1, 0, 0);
+    Vec3f reflect_dir = caster.reflect(dir, N);
+    EXPECT_TRUE(Vec3f(-1, -1, 0) == reflect_dir);
 }
 
 TEST_F(CasterFixture, NoIntersect){
@@ -36,5 +43,6 @@ TEST_F(CasterFixture, BorderIntersect){
 TEST_F(CasterFixture, WithinBorderIntersect){
     Vec3f ray = Vec3f(1, 0, -1); // right
     EXPECT_TRUE(caster.isSphereRayIntersect(mnDistOut, sp, ray));
-    EXPECT_FLOAT_EQ((1 - cos(M_PI / 6)) * 2, mnDistOut); // cosine(30 degrees)
+    // dot product of L (1, 0, -1) and tca (1, 0, -1) equals 2
+    EXPECT_FLOAT_EQ(2 - sqrt(3), mnDistOut); // cosine(30 degrees)
 }

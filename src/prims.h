@@ -6,10 +6,16 @@
 // Primitives in modeling applications such as cubes, spheres, lights
 class Material {
     private:
+        Vec2f albedo;
         color diffuseColor;
+        float specExponent;
     public:
-        Material(const color& diffuseColor = color(0, 0, 0));
+        Material(const Vec2f& albedo = Vec2f(1, 0), 
+            const color& diffuseColor = color(0, 0, 0),
+            const float specExponent_in = 1);
+        Vec2f getAlbedo() const;
         color getDiffuseColor() const;
+        float getSpecExponent() const;
 };
 
 class Sphere {
@@ -19,7 +25,7 @@ class Sphere {
         float radius;
     public:
         Sphere(const Material& material, const Vec3f& center, float radius);
-        color getDiffuseColor() const;
+        Material getMaterial() const;
         Vec3f getCenter() const;
         float getRadius() const;
 };
