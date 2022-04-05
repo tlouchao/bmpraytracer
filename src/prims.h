@@ -6,14 +6,14 @@
 // Primitives in modeling applications such as cubes, spheres, lights
 class Material {
     private:
-        Vec2f albedo;
+        Vec3f albedo;
         color diffuseColor;
         float specExponent;
     public:
-        Material(const Vec2f& albedo = Vec2f(1, 0), 
+        Material(const Vec3f& albedo = Vec3f(1, 0, 0), 
             const color& diffuseColor = color(0, 0, 0),
             const float specExponent_in = 1);
-        Vec2f getAlbedo() const;
+        Vec3f getAlbedo() const;
         color getDiffuseColor() const;
         float getSpecExponent() const;
 };

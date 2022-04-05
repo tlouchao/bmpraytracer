@@ -11,10 +11,10 @@ Vec3f Sphere::getCenter() const{ return center; }
 float Sphere::getRadius() const{ return radius; }
 
 // material
-Material::Material(const Vec2f& albedo, const color& diffuseColor, const float specExponent_in) : 
+Material::Material(const Vec3f& albedo, const color& diffuseColor, const float specExponent_in) : 
     albedo{albedo}, diffuseColor{diffuseColor}{ assert (specExponent_in >= 1.f); specExponent = specExponent_in; }
 
-Vec2f Material::getAlbedo() const { return albedo; }
+Vec3f Material::getAlbedo() const { return albedo; }
 
 color Material::getDiffuseColor() const { return diffuseColor; }
 

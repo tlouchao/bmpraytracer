@@ -72,6 +72,12 @@ class vec<4,T> {
 
 // ----- Overloaded Operators -----
 
+// Reflect vector across surface normal
+template <typename T>
+vec<3, T> reflect(const vec<3, T>& dir, const vec<3, T>& N) {
+    return dir - (N * 2) * (N * dir);
+}
+
 // Cross product of two vectors w/ dimension 3
 template <typename T>
 vec<3, T> cross(const vec<3, T>& q, const vec<3, T>& r) {

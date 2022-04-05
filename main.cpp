@@ -14,9 +14,9 @@ int main(){
     BMP bmp(colors);
 
     // materials
-    Material wood = Material(Vec2f(.5f, .3f), color(255u, 223u, 128u), 5.f);
-    Material chrome = Material(Vec2f(1.f, .5f), color(198u, 198u, 198u), 50.f);
-    Material paint = Material(Vec2f(.4f, .2f), color(223u, 0u, 0u), 1.f);
+    Material wood = Material(Vec3f(.5f, .3f, .1f), color(255, 223, 128), 5.f);
+    Material chrome = Material(Vec3f(.75f, .5f, .9f), color(198, 198, 198), 50.f);
+    Material paint = Material(Vec3f(.4f, .2f, 0.f), color(223, 0, 0), 1.f);
     color bgcolor = color(0u, 0u, 128u);
 
     // primitives
@@ -34,7 +34,7 @@ int main(){
     std::vector<Light> lights{lt1, lt2};
 
     // render scene
-    colors.get()->fillColor(bgcolor);
+    caster.setBgColor(bgcolor);
     caster.cast(spheres, lights);
 
     // write image array to file
