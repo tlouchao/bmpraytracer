@@ -17,12 +17,12 @@ color Caster::getBgColor() const { return bgColor; }
 
 void Caster::setBgColor(color bgColor_in ) { bgColor = bgColor_in; }
 
-void Caster::cast(const std::vector<Sphere>& spheres, const std::vector<Light>& lights) const {
+void Caster::cast(const std::vector<Sphere>& spheres, const std::vector<Light>& lights, size_t depth) const {
     Vec3f origin = Vec3f(0, 0, 0);
     for (size_t i{}; i < height; ++i){
         for (size_t j{}; j < width; j++){
             color resultColorOut = bgColor;
-            cast_ray(resultColorOut, spheres, lights, rayArr[i * width + j], origin);
+            cast_ray(resultColorOut, spheres, lights, rayArr[i * width + j], origin, depth);
             colors.get()->setColor(resultColorOut, i, j); 
         }
     }
@@ -30,7 +30,6 @@ void Caster::cast(const std::vector<Sphere>& spheres, const std::vector<Light>& 
 
 void Caster::cast_ray(color& resultColorOut, const std::vector<Sphere>& spheres, const std::vector<Light>& lights,
     const Vec3f& dir, const Vec3f& origin, size_t depth) const {
-    if (depth == 0){ return; } // stop recursion
     float mnDistSpheres = std::numeric_limits<float>::max();
     float mnDistOut, shadowDistOut; 
     Vec3f hitOut, shadowHitOut, N; // N == surface normal
@@ -42,11 +41,16 @@ void Caster::cast_ray(color& resultColorOut, const std::vector<Sphere>& spheres,
             mnDistSpheres = mnDistOut;
             N = (hitOut - spheres[sp_k].getCenter()).normalize();
             material = spheres[sp_k].getMaterial();
-            // recursive reflect
-            Vec3f reflectDir = reflect(dir, N).normalize(); 
-            Vec3f reflectOrigin = hitOut;
-            color resultReflColorOut = bgColor;
-            cast_ray(resultReflColorOut, spheres, lights, reflectDir, reflectOrigin, depth - 1);
+            // recursive reflect & refract
+            color flectColorOut = bgColor, fractColorOut = bgColor;
+            if (depth > 0) {
+                Vec3f reflectDir = reflect(dir, N), refractDir = refract(dir, N, material.getRefrIndex());
+                Vec3f reflectOrigin = reflectDir*N < 0 ? hitOut - N*1e-3 : hitOut + N*1e-3;
+                Vec3f refractOrigin = refractDir*N < 0 ? hitOut - N*1e-3 : hitOut + N*1e-3;
+                reflectDir.normalize(); if (refractDir != Vec3f(0, 0, 0)){ refractDir.normalize(); } 
+                cast_ray(flectColorOut, spheres, lights, reflectDir, reflectOrigin, depth - 1); 
+                cast_ray(fractColorOut, spheres, lights, refractDir, refractOrigin, 0);
+            }
             // initialize coefficients
             float diffuseIntensity{}, specularIntensity{};
             // calc lights
@@ -73,8 +77,9 @@ void Caster::cast_ray(color& resultColorOut, const std::vector<Sphere>& spheres,
             // set color
             resultColorOut = (material.getDiffuseColor() * diffuseIntensity * material.getAlbedo()[0]) + 
                              (color(255u, 255u, 255u) * specularIntensity * material.getAlbedo()[1]) + 
-                             resultReflColorOut * material.getAlbedo()[2];
-            for (size_t m{}; m < 3; ++m){ resultColorOut[m] = std::min(255u, resultColorOut[m]); }
+                             flectColorOut * material.getAlbedo()[2] +
+                             fractColorOut * material.getAlbedo()[3];
+            for (size_t m{}; m < 3; ++m){ resultColorOut[m] = std::clamp(resultColorOut[m], 0u, 255u); }
         }
     }
 }

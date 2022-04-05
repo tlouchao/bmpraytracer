@@ -11,14 +11,19 @@ Vec3f Sphere::getCenter() const{ return center; }
 float Sphere::getRadius() const{ return radius; }
 
 // material
-Material::Material(const Vec3f& albedo, const color& diffuseColor, const float specExponent_in) : 
-    albedo{albedo}, diffuseColor{diffuseColor}{ assert (specExponent_in >= 1.f); specExponent = specExponent_in; }
+Material::Material(const Vec4f& albedo, const color& diffuseColor, const float specExponent_in, const float refrIndex_in) : 
+    albedo{albedo}, diffuseColor{diffuseColor} { 
+    assert (specExponent_in >= 1.f); specExponent = specExponent_in; 
+    assert (refrIndex_in >= 1.f); refrIndex = refrIndex_in;
+}
 
-Vec3f Material::getAlbedo() const { return albedo; }
+Vec4f Material::getAlbedo() const { return albedo; }
 
 color Material::getDiffuseColor() const { return diffuseColor; }
 
 float Material::getSpecExponent() const { return specExponent; }
+
+float Material::getRefrIndex() const { return refrIndex; }
 
 // light
 Light::Light(const Vec3f& center_in, float intensity_in) : 

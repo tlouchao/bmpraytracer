@@ -23,7 +23,7 @@ class Caster {
         void setFov(float fov_in);
         color getBgColor() const;
         void setBgColor(color fov_in);
-        void cast(const std::vector<Sphere>& spheres, const std::vector<Light>& lights) const;
+        void cast(const std::vector<Sphere>& spheres, const std::vector<Light>& lights, size_t depth = 4) const;
         void cast_ray(color& resultColorOut, const std::vector<Sphere>& spheres, const std::vector<Light>& lights, 
             const Vec3f& dir, const Vec3f& origin, size_t depth = 4) const;
         bool isSphereRayIntersect(float& mnDistOut, Vec3f& hitOut, const Sphere& sphere, const Vec3f& dir,

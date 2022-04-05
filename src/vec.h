@@ -1,6 +1,7 @@
 #ifndef VEC_H
 #define VEC_H
 
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <iosfwd>
@@ -16,11 +17,6 @@ class vec {
         T& operator[](const size_t i){ assert(i < DIM); return _data[i]; }
         const T& operator[](const size_t i) const { assert(i < DIM); return _data[i]; }
 };
-
-typedef vec<3, unsigned int> color;
-typedef vec<2, float> Vec2f;
-typedef vec<3, float> Vec3f;
-typedef vec<4, float> Vec4f;
 
 template <typename T> 
 class vec<2,T> {
@@ -76,6 +72,21 @@ class vec<4,T> {
 template <typename T>
 vec<3, T> reflect(const vec<3, T>& dir, const vec<3, T>& N) {
     return dir - (N * 2) * (N * dir);
+}
+
+// TODO:
+// Refraction vector
+template <typename T>
+vec<3, T> refract(const vec<3, T>& dir, const vec<3, T>& N, const float refrIndex) {
+    float cosOne = std::clamp(dir * N, -1.f, 1.f), cosTwo; 
+    float ratio = 1 / refrIndex;
+    vec<3, T> rn = N; 
+    vec<3, T> res;
+    if (cosOne < 0){ ratio = refrIndex; rn = -rn; cosOne = -cosOne; }
+    cosTwo = 1 - ratio * ratio * (1 - cosOne * cosOne);
+    if (cosTwo < 0) { res = vec<3, T>(0, 0, 0);
+    } else { res = (dir * ratio) + (rn * (cosOne * ratio - sqrtf(cosTwo))); }
+    return res;
 }
 
 // Cross product of two vectors w/ dimension 3
@@ -143,5 +154,10 @@ std::ostream& operator<< (std::ostream& out, const vec<DIM,T>& v) {
     for(size_t i{}; i<DIM; i++) { out << v[i] << ' '; }
     return out;
 }
+
+typedef vec<3, unsigned int> color;
+typedef vec<2, float> Vec2f;
+typedef vec<3, float> Vec3f;
+typedef vec<4, float> Vec4f;
 
 #endif
