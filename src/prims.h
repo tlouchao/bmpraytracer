@@ -31,6 +31,21 @@ class Sphere {
         float getRadius() const;
 };
 
+class Checkers {
+    private:
+        Material matOdd, matEven;
+        Vec3f center;
+        size_t rows, cols, factor;
+    public:
+        Checkers(const Material& matOdd, const Material& matEven, const Vec3f& center);
+        Checkers(const Material& matOdd, const Material& matEven, const Vec3f& center,
+            size_t rows, size_t cols, size_t factor);
+        Material getMaterial(const Vec3f& hit) const;
+        Vec3f getCenter() const;
+        size_t getRows() const; size_t getCols() const;
+        size_t getWidth() const; size_t getHeight() const;
+};
+
 class Light {
     private:
         Vec3f center;
