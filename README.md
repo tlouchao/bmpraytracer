@@ -24,4 +24,5 @@ to `c_cpp_properties.json` under the `.vscode` directory, in order for tests to 
         ],
      ...
     }
+]
 ```
